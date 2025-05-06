@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head><title>Simple App</title></head>
+<body>
+<h2>Enter your name:</h2>
+<form id="nameForm">
+  <input type="text" id="name" />
+  <button type="submit">Submit</button>
+</form>
+<script>
+  document.getElementById('nameForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    await fetch('http://backend:3000/name', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ name })
+    });
+    alert('Name submitted!');
+  };
+</script>
+</body>
+</html>
