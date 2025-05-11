@@ -3,27 +3,43 @@ kind: Deployment
 metadata:
   name: {{ include "voting-database.fullname" . }}
   labels:
-    app: {{ include "voting-database.name" . }}
+    {{- include "voting-database.labels" . | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "voting-database.name" . }}
+      {{- include "voting-database.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: {{ include "voting-database.name" . }}
+        {{- include "voting-database.selectorLabels" . | nindent 8 }}
     spec:
       containers:
-        - name: postgres
-          image: "{{ .Values.postgresql.image.repository }}:{{ .Values.postgresql.image.tag }}"
-          imagePullPolicy: {{ .Values.postgresql.image.pullPolicy }}
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 5432
+            - name: postgresql
+              containerPort: 5432
+              protocol: TCP
           env:
             - name: POSTGRES_DB
-              value: {{ .Values.postgresql.database | quote }}
+              value: {{ .Values.postgresql.postgresDatabase }}
             - name: POSTGRES_USER
-              value: {{ .Values.postgresql.username | quote }}
+              value: {{ .Values.postgresql.postgresUsername }}
             - name: POSTGRES_PASSWORD
-              value: {{ .Values.postgresql.password | quote }} 
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "voting-database.fullname" . }}
+                  key: postgresql-password
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+            - name: init-script
+              mountPath: /docker-entrypoint-initdb.d
+      volumes:
+        - name: data
+          emptyDir: {}
+        - name: init-script
+          configMap:
+            name: {{ include "voting-database.fullname" . }}-init 
