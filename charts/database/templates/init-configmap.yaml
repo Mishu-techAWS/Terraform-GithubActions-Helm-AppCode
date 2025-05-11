@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "voting-database.labels" . | nindent 4 }}
 data:
-  init.sql: |
+  init.sql: |-
     -- Create candidates table
     CREATE TABLE IF NOT EXISTS candidates (
         id SERIAL PRIMARY KEY,
