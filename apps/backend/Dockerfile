@@ -7,7 +7,8 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN apk add --no-cache python3 make g++ && \
+    npm install
 
 # Copy source code
 COPY . .
