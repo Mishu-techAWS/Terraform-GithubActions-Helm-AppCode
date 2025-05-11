@@ -1,14 +1,18 @@
+replicaCount: 1
+
+image:
+  repository: postgres
+  tag: "14"
+  pullPolicy: IfNotPresent
+
 postgresql:
-  username: postgres
-  password: postgres
-  database: voting
-  port: 5432
-  image:
-    repository: postgres
-    tag: "13"
-    pullPolicy: IfNotPresent
+  postgresDatabase: voting
+  postgresUsername: postgres
+  postgresPassword: postgres
+
 service:
   type: ClusterIP
   port: 5432
+
 persistence:
   enabled: false 
