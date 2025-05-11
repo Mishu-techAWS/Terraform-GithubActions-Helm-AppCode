@@ -29,6 +29,11 @@ jobs:
       - name: Set up gcloud CLI
         uses: google-github-actions/setup-gcloud@v2
 
+      - name: Install gke-gcloud-auth-plugin
+        run: |
+          gcloud components install gke-gcloud-auth-plugin --quiet
+          echo "$(gcloud --version)"
+
       - name: Configure Docker for GCR
         run: |
           gcloud auth configure-docker $GCR_REGION
@@ -46,6 +51,14 @@ jobs:
       - name: Get GKE credentials
         run: |
           gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $PROJECT_ID
+          kubectl config current-context
+
+      - name: Install Helm
+        run: |
+          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+          chmod 700 get_helm.sh
+          ./get_helm.sh
+          helm version
 
       - name: Deploy with Helm
         run: |
