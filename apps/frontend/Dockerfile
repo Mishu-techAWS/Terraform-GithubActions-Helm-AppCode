@@ -6,9 +6,11 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Install dependencies with specific version of npm
 RUN apk add --no-cache python3 make g++ && \
-    npm install
+    npm install -g npm@10.8.2 && \
+    npm cache clean --force && \
+    npm install --verbose
 
 # Copy source code
 COPY . .
