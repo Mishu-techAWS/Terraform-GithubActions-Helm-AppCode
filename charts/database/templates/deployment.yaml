@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ include "voting-database.fullname" . }}
   labels:
-    {{- include "voting-database.labels" . | nindent 4 }}
+    app: {{ include "voting-database.name" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
