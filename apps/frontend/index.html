@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .candidates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .candidate-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .vote-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .vote-button:hover {
+            background-color: #45a049;
+        }
+        .votes {
+            font-size: 24px;
+            margin: 10px 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Voting Application</h1>
+    </div>
+    <div class="candidates-grid" id="candidatesGrid">
+        <!-- Candidates will be inserted here -->
+    </div>
+
+    <script>
+        async function fetchCandidates() {
+            try {
+                const response = await fetch('/api/candidates');
+                const candidates = await response.json();
+                displayCandidates(candidates);
+            } catch (error) {
+                console.error('Error fetching candidates:', error);
+            }
+        }
+
+        async function vote(candidateId) {
+            try {
+                const response = await fetch('/api/vote', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ candidateId }),
+                });
+                if (response.ok) {
+                    fetchCandidates(); // Refresh the candidates list
+                }
+            } catch (error) {
+                console.error('Error voting:', error);
+            }
+        }
+
+        function displayCandidates(candidates) {
+            const grid = document.getElementById('candidatesGrid');
+            grid.innerHTML = candidates.map(candidate => `
+                <div class="candidate-card">
+                    <h2>${candidate.name}</h2>
+                    <div class="votes">${candidate.votes} votes</div>
+                    <button class="vote-button" onclick="vote(${candidate.id})">
+                        Vote
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Initial load
+        fetchCandidates();
+    </script>
+</body>
+</html> 

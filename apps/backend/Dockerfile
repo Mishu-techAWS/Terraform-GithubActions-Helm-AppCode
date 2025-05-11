@@ -1,22 +1,12 @@
-# Build stage
-FROM node:18-alpine
+FROM python:3.9-slim
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Install dependencies with specific version of npm
-RUN apk add --no-cache python3 make g++ && \
-    npm install -g npm@10.8.2 && \
-    npm cache clean --force && \
-    npm install --verbose
-
-# Copy source code
 COPY . .
 
-# Expose port
 EXPOSE 3001
 
-# Start the application
-CMD ["npm", "start"] 
+CMD ["gunicorn", "--bind", "0.0.0.0:3001", "app:app"] 
