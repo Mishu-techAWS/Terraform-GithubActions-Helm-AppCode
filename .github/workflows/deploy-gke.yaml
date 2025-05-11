@@ -13,13 +13,10 @@ jobs:
       GKE_CLUSTER: ${{ secrets.GKE_CLUSTER }}
       GKE_ZONE: ${{ secrets.GKE_ZONE }}
       GCR_REGION: gcr.io
-      IMAGE_TAG: ${{ github.sha }}
+      IMAGE_TAG: latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Debug - Print SHA
-        run: echo "Current commit SHA"
+        uses: actions/checkout@v3      
 
       - name: Set up Cloud SDK
         uses: google-github-actions/auth@v2
