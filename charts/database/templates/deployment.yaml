@@ -8,11 +8,11 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "voting-database.selectorLabels" . | nindent 6 }}
+      app: {{ include "voting-database.name" . }}
   template:
     metadata:
       labels:
-        {{- include "voting-database.selectorLabels" . | nindent 8 }}
+        app: {{ include "voting-database.name" . }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
