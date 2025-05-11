@@ -1,0 +1,14 @@
+postgresql:
+  username: postgres
+  password: postgres
+  database: voting
+  port: 5432
+  image:
+    repository: postgres
+    tag: "13"
+    pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  port: 5432
+persistence:
+  enabled: false 
