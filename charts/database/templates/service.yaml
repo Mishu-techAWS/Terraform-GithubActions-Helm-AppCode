@@ -12,5 +12,4 @@ spec:
       protocol: TCP
       name: postgresql
   selector:
-    app.kubernetes.io/instance: voting-database
-    app.kubernetes.io/name: voting-database 
+    app: {{ include "voting-database.name" . }} 
